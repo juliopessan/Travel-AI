@@ -1,0 +1,600 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNcqPwi6Ur9THyn5N0UamHt",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/juliopessan/Travel-AI/blob/main/Travel%20AI\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "mpClN0KrKBID",
+        "outputId": "916ddf11-411d-4907-ed08-a16b61de15a2"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting openai==0.28\n",
+            "  Downloading openai-0.28.0-py3-none-any.whl (76 kB)\n",
+            "\u001b[?25l     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m0.0/76.5 kB\u001b[0m \u001b[31m?\u001b[0m eta \u001b[36m-:--:--\u001b[0m\r\u001b[2K     \u001b[91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[90m╺\u001b[0m\u001b[90m━━\u001b[0m \u001b[32m71.7/76.5 kB\u001b[0m \u001b[31m2.4 MB/s\u001b[0m eta \u001b[36m0:00:01\u001b[0m\r\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m76.5/76.5 kB\u001b[0m \u001b[31m1.9 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: requests>=2.20 in /usr/local/lib/python3.10/dist-packages (from openai==0.28) (2.31.0)\n",
+            "Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (from openai==0.28) (4.66.2)\n",
+            "Requirement already satisfied: aiohttp in /usr/local/lib/python3.10/dist-packages (from openai==0.28) (3.9.3)\n",
+            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.10/dist-packages (from requests>=2.20->openai==0.28) (3.3.2)\n",
+            "Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.10/dist-packages (from requests>=2.20->openai==0.28) (3.6)\n",
+            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.10/dist-packages (from requests>=2.20->openai==0.28) (2.0.7)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.10/dist-packages (from requests>=2.20->openai==0.28) (2024.2.2)\n",
+            "Requirement already satisfied: aiosignal>=1.1.2 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28) (1.3.1)\n",
+            "Requirement already satisfied: attrs>=17.3.0 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28) (23.2.0)\n",
+            "Requirement already satisfied: frozenlist>=1.1.1 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28) (1.4.1)\n",
+            "Requirement already satisfied: multidict<7.0,>=4.5 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28) (6.0.5)\n",
+            "Requirement already satisfied: yarl<2.0,>=1.0 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28) (1.9.4)\n",
+            "Requirement already satisfied: async-timeout<5.0,>=4.0 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28) (4.0.3)\n",
+            "Installing collected packages: openai\n",
+            "Successfully installed openai-0.28.0\n"
+          ]
+        }
+      ],
+      "source": [
+        "pip install openai==0.28"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pip install gradio"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-2h5_kSKKR7p",
+        "outputId": "c3096b35-72df-4033-9063-a098a190a48c"
+      },
+      "execution_count": 2,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting gradio\n",
+            "  Downloading gradio-4.19.2-py3-none-any.whl (16.9 MB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m16.9/16.9 MB\u001b[0m \u001b[31m17.4 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hCollecting aiofiles<24.0,>=22.0 (from gradio)\n",
+            "  Downloading aiofiles-23.2.1-py3-none-any.whl (15 kB)\n",
+            "Requirement already satisfied: altair<6.0,>=4.2.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (4.2.2)\n",
+            "Collecting fastapi (from gradio)\n",
+            "  Downloading fastapi-0.110.0-py3-none-any.whl (92 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m92.1/92.1 kB\u001b[0m \u001b[31m11.8 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hCollecting ffmpy (from gradio)\n",
+            "  Downloading ffmpy-0.3.2.tar.gz (5.5 kB)\n",
+            "  Preparing metadata (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "Collecting gradio-client==0.10.1 (from gradio)\n",
+            "  Downloading gradio_client-0.10.1-py3-none-any.whl (307 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m307.9/307.9 kB\u001b[0m \u001b[31m20.3 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hCollecting httpx>=0.24.1 (from gradio)\n",
+            "  Downloading httpx-0.27.0-py3-none-any.whl (75 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m75.6/75.6 kB\u001b[0m \u001b[31m9.7 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: huggingface-hub>=0.19.3 in /usr/local/lib/python3.10/dist-packages (from gradio) (0.20.3)\n",
+            "Requirement already satisfied: importlib-resources<7.0,>=1.3 in /usr/local/lib/python3.10/dist-packages (from gradio) (6.1.1)\n",
+            "Requirement already satisfied: jinja2<4.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (3.1.3)\n",
+            "Requirement already satisfied: markupsafe~=2.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (2.1.5)\n",
+            "Requirement already satisfied: matplotlib~=3.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (3.7.1)\n",
+            "Requirement already satisfied: numpy~=1.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (1.25.2)\n",
+            "Collecting orjson~=3.0 (from gradio)\n",
+            "  Downloading orjson-3.9.15-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (138 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m138.5/138.5 kB\u001b[0m \u001b[31m15.7 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from gradio) (23.2)\n",
+            "Requirement already satisfied: pandas<3.0,>=1.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (1.5.3)\n",
+            "Requirement already satisfied: pillow<11.0,>=8.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (9.4.0)\n",
+            "Requirement already satisfied: pydantic>=2.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (2.6.1)\n",
+            "Collecting pydub (from gradio)\n",
+            "  Downloading pydub-0.25.1-py2.py3-none-any.whl (32 kB)\n",
+            "Collecting python-multipart>=0.0.9 (from gradio)\n",
+            "  Downloading python_multipart-0.0.9-py3-none-any.whl (22 kB)\n",
+            "Requirement already satisfied: pyyaml<7.0,>=5.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (6.0.1)\n",
+            "Collecting ruff>=0.2.2 (from gradio)\n",
+            "  Downloading ruff-0.2.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (7.8 MB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m7.8/7.8 MB\u001b[0m \u001b[31m20.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hCollecting semantic-version~=2.0 (from gradio)\n",
+            "  Downloading semantic_version-2.10.0-py2.py3-none-any.whl (15 kB)\n",
+            "Collecting tomlkit==0.12.0 (from gradio)\n",
+            "  Downloading tomlkit-0.12.0-py3-none-any.whl (37 kB)\n",
+            "Requirement already satisfied: typer[all]<1.0,>=0.9 in /usr/local/lib/python3.10/dist-packages (from gradio) (0.9.0)\n",
+            "Requirement already satisfied: typing-extensions~=4.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (4.9.0)\n",
+            "Collecting uvicorn>=0.14.0 (from gradio)\n",
+            "  Downloading uvicorn-0.27.1-py3-none-any.whl (60 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m60.8/60.8 kB\u001b[0m \u001b[31m7.7 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: fsspec in /usr/local/lib/python3.10/dist-packages (from gradio-client==0.10.1->gradio) (2023.6.0)\n",
+            "Collecting websockets<12.0,>=10.0 (from gradio-client==0.10.1->gradio)\n",
+            "  Downloading websockets-11.0.3-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (129 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m129.9/129.9 kB\u001b[0m \u001b[31m15.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: entrypoints in /usr/local/lib/python3.10/dist-packages (from altair<6.0,>=4.2.0->gradio) (0.4)\n",
+            "Requirement already satisfied: jsonschema>=3.0 in /usr/local/lib/python3.10/dist-packages (from altair<6.0,>=4.2.0->gradio) (4.19.2)\n",
+            "Requirement already satisfied: toolz in /usr/local/lib/python3.10/dist-packages (from altair<6.0,>=4.2.0->gradio) (0.12.1)\n",
+            "Requirement already satisfied: anyio in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (3.7.1)\n",
+            "Requirement already satisfied: certifi in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (2024.2.2)\n",
+            "Collecting httpcore==1.* (from httpx>=0.24.1->gradio)\n",
+            "  Downloading httpcore-1.0.4-py3-none-any.whl (77 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m77.8/77.8 kB\u001b[0m \u001b[31m9.8 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: idna in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (3.6)\n",
+            "Requirement already satisfied: sniffio in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (1.3.0)\n",
+            "Collecting h11<0.15,>=0.13 (from httpcore==1.*->httpx>=0.24.1->gradio)\n",
+            "  Downloading h11-0.14.0-py3-none-any.whl (58 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m58.3/58.3 kB\u001b[0m \u001b[31m6.1 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: filelock in /usr/local/lib/python3.10/dist-packages (from huggingface-hub>=0.19.3->gradio) (3.13.1)\n",
+            "Requirement already satisfied: requests in /usr/local/lib/python3.10/dist-packages (from huggingface-hub>=0.19.3->gradio) (2.31.0)\n",
+            "Requirement already satisfied: tqdm>=4.42.1 in /usr/local/lib/python3.10/dist-packages (from huggingface-hub>=0.19.3->gradio) (4.66.2)\n",
+            "Requirement already satisfied: contourpy>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (1.2.0)\n",
+            "Requirement already satisfied: cycler>=0.10 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (0.12.1)\n",
+            "Requirement already satisfied: fonttools>=4.22.0 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (4.49.0)\n",
+            "Requirement already satisfied: kiwisolver>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (1.4.5)\n",
+            "Requirement already satisfied: pyparsing>=2.3.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (3.1.1)\n",
+            "Requirement already satisfied: python-dateutil>=2.7 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (2.8.2)\n",
+            "Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.10/dist-packages (from pandas<3.0,>=1.0->gradio) (2023.4)\n",
+            "Requirement already satisfied: annotated-types>=0.4.0 in /usr/local/lib/python3.10/dist-packages (from pydantic>=2.0->gradio) (0.6.0)\n",
+            "Requirement already satisfied: pydantic-core==2.16.2 in /usr/local/lib/python3.10/dist-packages (from pydantic>=2.0->gradio) (2.16.2)\n",
+            "Requirement already satisfied: click<9.0.0,>=7.1.1 in /usr/local/lib/python3.10/dist-packages (from typer[all]<1.0,>=0.9->gradio) (8.1.7)\n",
+            "Collecting colorama<0.5.0,>=0.4.3 (from typer[all]<1.0,>=0.9->gradio)\n",
+            "  Downloading colorama-0.4.6-py2.py3-none-any.whl (25 kB)\n",
+            "Collecting shellingham<2.0.0,>=1.3.0 (from typer[all]<1.0,>=0.9->gradio)\n",
+            "  Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)\n",
+            "Requirement already satisfied: rich<14.0.0,>=10.11.0 in /usr/local/lib/python3.10/dist-packages (from typer[all]<1.0,>=0.9->gradio) (13.7.0)\n",
+            "Collecting starlette<0.37.0,>=0.36.3 (from fastapi->gradio)\n",
+            "  Downloading starlette-0.36.3-py3-none-any.whl (71 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m71.5/71.5 kB\u001b[0m \u001b[31m7.7 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: attrs>=22.2.0 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (23.2.0)\n",
+            "Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (2023.12.1)\n",
+            "Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (0.33.0)\n",
+            "Requirement already satisfied: rpds-py>=0.7.1 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (0.18.0)\n",
+            "Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.10/dist-packages (from python-dateutil>=2.7->matplotlib~=3.0->gradio) (1.16.0)\n",
+            "Requirement already satisfied: markdown-it-py>=2.2.0 in /usr/local/lib/python3.10/dist-packages (from rich<14.0.0,>=10.11.0->typer[all]<1.0,>=0.9->gradio) (3.0.0)\n",
+            "Requirement already satisfied: pygments<3.0.0,>=2.13.0 in /usr/local/lib/python3.10/dist-packages (from rich<14.0.0,>=10.11.0->typer[all]<1.0,>=0.9->gradio) (2.16.1)\n",
+            "Requirement already satisfied: exceptiongroup in /usr/local/lib/python3.10/dist-packages (from anyio->httpx>=0.24.1->gradio) (1.2.0)\n",
+            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.10/dist-packages (from requests->huggingface-hub>=0.19.3->gradio) (3.3.2)\n",
+            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.10/dist-packages (from requests->huggingface-hub>=0.19.3->gradio) (2.0.7)\n",
+            "Requirement already satisfied: mdurl~=0.1 in /usr/local/lib/python3.10/dist-packages (from markdown-it-py>=2.2.0->rich<14.0.0,>=10.11.0->typer[all]<1.0,>=0.9->gradio) (0.1.2)\n",
+            "Building wheels for collected packages: ffmpy\n",
+            "  Building wheel for ffmpy (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for ffmpy: filename=ffmpy-0.3.2-py3-none-any.whl size=5584 sha256=28d7c6ee1f145605fe4a79a3636a8ae24ed7484b4bbb72fdba1fa84c1b61f412\n",
+            "  Stored in directory: /root/.cache/pip/wheels/bd/65/9a/671fc6dcde07d4418df0c592f8df512b26d7a0029c2a23dd81\n",
+            "Successfully built ffmpy\n",
+            "Installing collected packages: pydub, ffmpy, websockets, tomlkit, shellingham, semantic-version, ruff, python-multipart, orjson, h11, colorama, aiofiles, uvicorn, starlette, httpcore, httpx, fastapi, gradio-client, gradio\n",
+            "Successfully installed aiofiles-23.2.1 colorama-0.4.6 fastapi-0.110.0 ffmpy-0.3.2 gradio-4.19.2 gradio-client-0.10.1 h11-0.14.0 httpcore-1.0.4 httpx-0.27.0 orjson-3.9.15 pydub-0.25.1 python-multipart-0.0.9 ruff-0.2.2 semantic-version-2.10.0 shellingham-1.5.4 starlette-0.36.3 tomlkit-0.12.0 uvicorn-0.27.1 websockets-11.0.3\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import openai\n",
+        "import gradio\n",
+        "\n",
+        "openai.api_key = \"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\"\n",
+        "\n",
+        "messages = [{\"role\": \"system\", \"content\": \"Assistente especialista em criar roteiros de viagens.\"}]\n",
+        "\n",
+        "def CustomChatGPT(user_input):\n",
+        "    messages.append({\"role\": \"user\", \"content\": user_input})\n",
+        "    response = openai.ChatCompletion.create(\n",
+        "        model=\"gpt-3.5-turbo\",\n",
+        "        messages=messages\n",
+        "    )\n",
+        "    ChatGPT_reply = response[\"choices\"][0][\"message\"][\"content\"]\n",
+        "    messages.append({\"role\": \"assistant\", \"content\": ChatGPT_reply})\n",
+        "    return ChatGPT_reply\n",
+        "\n",
+        "def contar_historia_engracada():\n",
+        "    # Aqui você pode adicionar uma história engraçada usando o OpenAI ou qualquer outra fonte de dados\n",
+        "    # Vou apenas fornecer uma história fictícia como exemplo\n",
+        "    return \"Um pato entrou em um bar e perguntou ao barman: 'Tem pão?'. O barman respondeu: 'Não, só servimos bebidas aqui'. E o pato disse: 'Ah, tudo bem, eu só queria molhar o bico!'\"\n",
+        "\n",
+        "def adicionar_tom_gen_z(resposta_anterior):\n",
+        "    # Aqui, você pode adicionar um tom de voz \"Gen Z\" à resposta anterior, se desejar\n",
+        "    # Vou apenas adicionar um emoji e um jargão como exemplo\n",
+        "    resposta_modificada = resposta_anterior + \"\\n🤣 BTW, foi hilário! 😂\"\n",
+        "    return resposta_modificada\n",
+        "\n",
+        "def adicionar_links_google_maps(destino, roteiro):\n",
+        "    links_destino = {}\n",
+        "    for dia, atividades in enumerate(roteiro, start=1):\n",
+        "        for atividade in atividades:\n",
+        "            lugar = atividade.split(\",\")[0].strip()\n",
+        "            links_destino[lugar] = f\"https://www.google.com/maps/place/{lugar.replace(' ', '+')}\"\n",
+        "\n",
+        "    links_formatados = \"\\n\".join([f\"- [{local}]({link})\" for local, link in links_destino.items()])\n",
+        "    return f\"🔗 **Links Úteis (Google Maps)**\\n{links_formatados}\"\n",
+        "\n",
+        "def adicionar_checklist_viagem():\n",
+        "    checklist = \"\"\"\n",
+        "    🧳 **Checklist de Viagem**:\n",
+        "    - Documentos de viagem (passaporte, vistos).\n",
+        "    - Chip de celular internacional. [eSim Holafly]( https://esim.holafly.com/)\n",
+        "    - App Citymapper para navegação. (https://citymapper.com/?lang=en)\n",
+        "    - Dinheiro e cartões. [NOMAD] (https://www.nomadglobal.com/pt)\n",
+        "    - Seguro viagem. [cartao de credito] (https://www.mastercard.com.br/pt-br/consumidores/encontre-seu-cartao/cartoes-credito/mastercard-black/masterassist-plus.html)\n",
+        "    - Passeios e [tickets]: (https://www.getyourguide.com/pt-br/?visitor-id=7V5OPKDB36YAOKT89N71JPDVF3RR1O8R&locale_autoredirect_optout=true)\n",
+        "    \"\"\"\n",
+        "    return checklist\n",
+        "\n",
+        "def responder_usuario(user_input):\n",
+        "    resposta_anterior = CustomChatGPT(user_input)\n",
+        "    resposta_modificada = adicionar_tom_gen_z(resposta_anterior)\n",
+        "    historia_engracada = contar_historia_engracada()\n",
+        "    roteiro = [\n",
+        "        [\"Comece o dia em Belém, visite a Torre de Belém e o Mosteiro dos Jerónimos.\",\n",
+        "         \"Prove os deliciosos pastéis de Belém na famosa pastelaria que os criou.\",\n",
+        "         \"Aproveite para passear à beira-rio e apreciar a vista do Padrão dos Descobrimentos e do MAAT.\",\n",
+        "         \"Termine o dia no LX Factory, um espaço cultural e artístico com lojas, restaurantes e galerias.\"],\n",
+        "        [\"Visite o bairro de Alfama, perca-se nas suas ruelas estreitas e visite o Castelo de São Jorge.\",\n",
+        "         \"Almoce num restaurante típico onde possa provar deliciosos pratos da gastronomia portuguesa.\",\n",
+        "         \"A tarde, explore o Bairro Alto e o Chiado, conhecendo lojas tradicionais, livrarias e cafés históricos.\",\n",
+        "         \"Termine o dia no miradouro do Parque Eduardo VII, com uma vista espetacular sobre a cidade.\"],\n",
+        "        [\"Pela manhã, visite o Mercado da Ribeira e prove algumas iguarias locais.\",\n",
+        "         \"Explore o bairro moderno de Parque das Nações, com o Oceanário de Lisboa e o teleférico.\",\n",
+        "         \"A tarde, faça um passeio de elétrico pelo centro histórico de Lisboa, passando pela Sé Catedral e pela Praça do Comércio.\",\n",
+        "         \"Jante num restaurante com fado ao vivo para uma experiência autêntica da cultura portuguesa.\"]\n",
+        "    ]\n",
+        "    destino = user_input  # Destino escolhido pelo usuário\n",
+        "    links_google_maps = adicionar_links_google_maps(destino, roteiro)\n",
+        "    checklist_viagem = adicionar_checklist_viagem()\n",
+        "    mensagem_inicial = \"🛫 Hey viajante, preparado para uma aventura incrivel? Bora la! Travel AI por aqui, seu planejador de viagens pessoal! Vou criar um roteiro incrível para voce!😊\"\n",
+        "    resposta_final = f\"{mensagem_inicial}\\n\\n{resposta_modificada}\\n\\n{links_google_maps}\\n\\n{checklist_viagem}\\n\\n\\\"Evite Perrengues Champs!\\\" Deixa eu te contar uma história engraçada: {historia_engracada}\"\n",
+        "    return resposta_final\n",
+        "\n",
+        "demo = gradio.Interface(fn=responder_usuario, inputs=\"text\", outputs=\"text\", title=\"Travel AI: Seu Roteiro em 1 Clique!\")\n",
+        "demo.launch(share=True)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 591
+        },
+        "id": "v_fPIcx4KERf",
+        "outputId": "4112f7ab-dae0-4204-939a-f8bd20faf7df"
+      },
+      "execution_count": 42,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Colab notebook detected. To show errors in colab notebook, set debug=True in launch()\n",
+            "Running on public URL: https://b6ba07ae4c22376d46.gradio.live\n",
+            "\n",
+            "This share link expires in 72 hours. For free permanent hosting and GPU upgrades, run `gradio deploy` from Terminal to deploy to Spaces (https://huggingface.co/spaces)\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ],
+            "text/html": [
+              "<div><iframe src=\"https://b6ba07ae4c22376d46.gradio.live\" width=\"100%\" height=\"500\" allow=\"autoplay; camera; microphone; clipboard-read; clipboard-write;\" frameborder=\"0\" allowfullscreen></iframe></div>"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": []
+          },
+          "metadata": {},
+          "execution_count": 42
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pip install --upgrade gradio"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "pGMPwfAU_N3N",
+        "outputId": "c9adf561-a2b8-4a92-bad1-8d38f3fafbd6"
+      },
+      "execution_count": 57,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: gradio in /usr/local/lib/python3.10/dist-packages (4.19.2)\n",
+            "Requirement already satisfied: aiofiles<24.0,>=22.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (23.2.1)\n",
+            "Requirement already satisfied: altair<6.0,>=4.2.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (4.2.2)\n",
+            "Requirement already satisfied: fastapi in /usr/local/lib/python3.10/dist-packages (from gradio) (0.110.0)\n",
+            "Requirement already satisfied: ffmpy in /usr/local/lib/python3.10/dist-packages (from gradio) (0.3.2)\n",
+            "Requirement already satisfied: gradio-client==0.10.1 in /usr/local/lib/python3.10/dist-packages (from gradio) (0.10.1)\n",
+            "Requirement already satisfied: httpx>=0.24.1 in /usr/local/lib/python3.10/dist-packages (from gradio) (0.27.0)\n",
+            "Requirement already satisfied: huggingface-hub>=0.19.3 in /usr/local/lib/python3.10/dist-packages (from gradio) (0.20.3)\n",
+            "Requirement already satisfied: importlib-resources<7.0,>=1.3 in /usr/local/lib/python3.10/dist-packages (from gradio) (6.1.1)\n",
+            "Requirement already satisfied: jinja2<4.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (3.1.3)\n",
+            "Requirement already satisfied: markupsafe~=2.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (2.1.5)\n",
+            "Requirement already satisfied: matplotlib~=3.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (3.7.1)\n",
+            "Requirement already satisfied: numpy~=1.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (1.25.2)\n",
+            "Requirement already satisfied: orjson~=3.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (3.9.15)\n",
+            "Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from gradio) (23.2)\n",
+            "Requirement already satisfied: pandas<3.0,>=1.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (1.5.3)\n",
+            "Requirement already satisfied: pillow<11.0,>=8.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (9.4.0)\n",
+            "Requirement already satisfied: pydantic>=2.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (2.6.1)\n",
+            "Requirement already satisfied: pydub in /usr/local/lib/python3.10/dist-packages (from gradio) (0.25.1)\n",
+            "Requirement already satisfied: python-multipart>=0.0.9 in /usr/local/lib/python3.10/dist-packages (from gradio) (0.0.9)\n",
+            "Requirement already satisfied: pyyaml<7.0,>=5.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (6.0.1)\n",
+            "Requirement already satisfied: ruff>=0.2.2 in /usr/local/lib/python3.10/dist-packages (from gradio) (0.2.2)\n",
+            "Requirement already satisfied: semantic-version~=2.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (2.10.0)\n",
+            "Requirement already satisfied: tomlkit==0.12.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (0.12.0)\n",
+            "Requirement already satisfied: typer[all]<1.0,>=0.9 in /usr/local/lib/python3.10/dist-packages (from gradio) (0.9.0)\n",
+            "Requirement already satisfied: typing-extensions~=4.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (4.9.0)\n",
+            "Requirement already satisfied: uvicorn>=0.14.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (0.27.1)\n",
+            "Requirement already satisfied: fsspec in /usr/local/lib/python3.10/dist-packages (from gradio-client==0.10.1->gradio) (2023.6.0)\n",
+            "Requirement already satisfied: websockets<12.0,>=10.0 in /usr/local/lib/python3.10/dist-packages (from gradio-client==0.10.1->gradio) (11.0.3)\n",
+            "Requirement already satisfied: entrypoints in /usr/local/lib/python3.10/dist-packages (from altair<6.0,>=4.2.0->gradio) (0.4)\n",
+            "Requirement already satisfied: jsonschema>=3.0 in /usr/local/lib/python3.10/dist-packages (from altair<6.0,>=4.2.0->gradio) (4.19.2)\n",
+            "Requirement already satisfied: toolz in /usr/local/lib/python3.10/dist-packages (from altair<6.0,>=4.2.0->gradio) (0.12.1)\n",
+            "Requirement already satisfied: anyio in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (3.7.1)\n",
+            "Requirement already satisfied: certifi in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (2024.2.2)\n",
+            "Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (1.0.4)\n",
+            "Requirement already satisfied: idna in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (3.6)\n",
+            "Requirement already satisfied: sniffio in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (1.3.0)\n",
+            "Requirement already satisfied: h11<0.15,>=0.13 in /usr/local/lib/python3.10/dist-packages (from httpcore==1.*->httpx>=0.24.1->gradio) (0.14.0)\n",
+            "Requirement already satisfied: filelock in /usr/local/lib/python3.10/dist-packages (from huggingface-hub>=0.19.3->gradio) (3.13.1)\n",
+            "Requirement already satisfied: requests in /usr/local/lib/python3.10/dist-packages (from huggingface-hub>=0.19.3->gradio) (2.31.0)\n",
+            "Requirement already satisfied: tqdm>=4.42.1 in /usr/local/lib/python3.10/dist-packages (from huggingface-hub>=0.19.3->gradio) (4.66.2)\n",
+            "Requirement already satisfied: contourpy>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (1.2.0)\n",
+            "Requirement already satisfied: cycler>=0.10 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (0.12.1)\n",
+            "Requirement already satisfied: fonttools>=4.22.0 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (4.49.0)\n",
+            "Requirement already satisfied: kiwisolver>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (1.4.5)\n",
+            "Requirement already satisfied: pyparsing>=2.3.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (3.1.1)\n",
+            "Requirement already satisfied: python-dateutil>=2.7 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (2.8.2)\n",
+            "Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.10/dist-packages (from pandas<3.0,>=1.0->gradio) (2023.4)\n",
+            "Requirement already satisfied: annotated-types>=0.4.0 in /usr/local/lib/python3.10/dist-packages (from pydantic>=2.0->gradio) (0.6.0)\n",
+            "Requirement already satisfied: pydantic-core==2.16.2 in /usr/local/lib/python3.10/dist-packages (from pydantic>=2.0->gradio) (2.16.2)\n",
+            "Requirement already satisfied: click<9.0.0,>=7.1.1 in /usr/local/lib/python3.10/dist-packages (from typer[all]<1.0,>=0.9->gradio) (8.1.7)\n",
+            "Requirement already satisfied: colorama<0.5.0,>=0.4.3 in /usr/local/lib/python3.10/dist-packages (from typer[all]<1.0,>=0.9->gradio) (0.4.6)\n",
+            "Requirement already satisfied: shellingham<2.0.0,>=1.3.0 in /usr/local/lib/python3.10/dist-packages (from typer[all]<1.0,>=0.9->gradio) (1.5.4)\n",
+            "Requirement already satisfied: rich<14.0.0,>=10.11.0 in /usr/local/lib/python3.10/dist-packages (from typer[all]<1.0,>=0.9->gradio) (13.7.0)\n",
+            "Requirement already satisfied: starlette<0.37.0,>=0.36.3 in /usr/local/lib/python3.10/dist-packages (from fastapi->gradio) (0.36.3)\n",
+            "Requirement already satisfied: attrs>=22.2.0 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (23.2.0)\n",
+            "Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (2023.12.1)\n",
+            "Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (0.33.0)\n",
+            "Requirement already satisfied: rpds-py>=0.7.1 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (0.18.0)\n",
+            "Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.10/dist-packages (from python-dateutil>=2.7->matplotlib~=3.0->gradio) (1.16.0)\n",
+            "Requirement already satisfied: markdown-it-py>=2.2.0 in /usr/local/lib/python3.10/dist-packages (from rich<14.0.0,>=10.11.0->typer[all]<1.0,>=0.9->gradio) (3.0.0)\n",
+            "Requirement already satisfied: pygments<3.0.0,>=2.13.0 in /usr/local/lib/python3.10/dist-packages (from rich<14.0.0,>=10.11.0->typer[all]<1.0,>=0.9->gradio) (2.16.1)\n",
+            "Requirement already satisfied: exceptiongroup in /usr/local/lib/python3.10/dist-packages (from anyio->httpx>=0.24.1->gradio) (1.2.0)\n",
+            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.10/dist-packages (from requests->huggingface-hub>=0.19.3->gradio) (3.3.2)\n",
+            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.10/dist-packages (from requests->huggingface-hub>=0.19.3->gradio) (2.0.7)\n",
+            "Requirement already satisfied: mdurl~=0.1 in /usr/local/lib/python3.10/dist-packages (from markdown-it-py>=2.2.0->rich<14.0.0,>=10.11.0->typer[all]<1.0,>=0.9->gradio) (0.1.2)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pip install gradio_client>=0.3.0 gradio>=3.38.0"
+      ],
+      "metadata": {
+        "id": "2uFBWZLH-2Tg"
+      },
+      "execution_count": 56,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install -U googlemaps\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "V4ApI_uJMlJ8",
+        "outputId": "ae05a501-5c45-4d3d-b026-82f599b642f1"
+      },
+      "execution_count": 71,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting googlemaps\n",
+            "  Downloading googlemaps-4.10.0.tar.gz (33 kB)\n",
+            "  Preparing metadata (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "Requirement already satisfied: requests<3.0,>=2.20.0 in /usr/local/lib/python3.10/dist-packages (from googlemaps) (2.31.0)\n",
+            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.10/dist-packages (from requests<3.0,>=2.20.0->googlemaps) (3.3.2)\n",
+            "Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.10/dist-packages (from requests<3.0,>=2.20.0->googlemaps) (3.6)\n",
+            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.10/dist-packages (from requests<3.0,>=2.20.0->googlemaps) (2.0.7)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.10/dist-packages (from requests<3.0,>=2.20.0->googlemaps) (2024.2.2)\n",
+            "Building wheels for collected packages: googlemaps\n",
+            "  Building wheel for googlemaps (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for googlemaps: filename=googlemaps-4.10.0-py3-none-any.whl size=40711 sha256=94cf9060fc6fb8e12c02b335dbc340273c040a69049c408e22176a6ec5c72983\n",
+            "  Stored in directory: /root/.cache/pip/wheels/17/f8/79/999d5d37118fd35d7219ef57933eb9d09886c4c4503a800f84\n",
+            "Successfully built googlemaps\n",
+            "Installing collected packages: googlemaps\n",
+            "Successfully installed googlemaps-4.10.0\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import googlemaps  # Inclua o módulo googlemaps\n",
+        "\n",
+        "# Defina a chave da API do Google Maps\n",
+        "gmaps = googlemaps.Client(key='AIzaSyB_PAZA2YqE5J5SUnfSQZs4bnrbgmiWjiE')\n",
+        "\n",
+        "import openai\n",
+        "import gradio\n",
+        "\n",
+        "openai.api_key = \"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\"\n",
+        "\n",
+        "messages = [{\"role\": \"system\", \"content\": \"Assistente especialista em criar roteiros de viagens.\"}]\n",
+        "\n",
+        "def CustomChatGPT(user_input):\n",
+        "    messages.append({\"role\": \"user\", \"content\": user_input})\n",
+        "    response = openai.ChatCompletion.create(\n",
+        "        model=\"gpt-3.5-turbo\",\n",
+        "        messages=messages\n",
+        "    )\n",
+        "    ChatGPT_reply = response[\"choices\"][0][\"message\"][\"content\"]\n",
+        "    messages.append({\"role\": \"assistant\", \"content\": ChatGPT_reply})\n",
+        "    return ChatGPT_reply\n",
+        "\n",
+        "def contar_historia_engracada():\n",
+        "    # Aqui você pode adicionar uma história engraçada usando o OpenAI ou qualquer outra fonte de dados\n",
+        "    # Vou apenas fornecer uma história fictícia como exemplo\n",
+        "    return \"Um pato entrou em um bar e perguntou ao barman: 'Tem pão?'. O barman respondeu: 'Não, só servimos bebidas aqui'. E o pato disse: 'Ah, tudo bem, eu só queria molhar o bico!'\"\n",
+        "\n",
+        "def adicionar_tom_gen_z(resposta_anterior):\n",
+        "    # Aqui, você pode adicionar um tom de voz \"Gen Z\" à resposta anterior, se desejar\n",
+        "    # Vou apenas adicionar um emoji e um jargão como exemplo\n",
+        "    resposta_modificada = resposta_anterior + \"\\n🤣 Foi hilário! 😂\"\n",
+        "    return resposta_modificada\n",
+        "\n",
+        "def adicionar_links_google_maps(destino, roteiro):\n",
+        "    links_destino = {}\n",
+        "    for dia, atividades_dia in enumerate(roteiro, start=1):\n",
+        "        for atividade in atividades_dia:\n",
+        "            local = atividade.split(\",\")[0].strip()\n",
+        "            links_destino[local] = f\"https://www.google.com/maps/place/{local.replace(' ', '+')}\"\n",
+        "\n",
+        "    links_formatados = \"\\n\".join([f\"- [{local}]({link})\" for local, link in links_destino.items()])\n",
+        "    return f\"🔗 **Links Úteis (Google Maps)**\\n\\n{links_formatados}\\n\\n\"\n",
+        "\n",
+        "def adicionar_checklist_viagem():\n",
+        "    checklist = \"\"\"\n",
+        "    🧳 **Checklist de Viagem**:\n",
+        "    - Documentos de viagem (passaporte, vistos).\n",
+        "    - Chip de celular internacional. [eSim Holafly]( https://esim.holafly.com/)\n",
+        "    - App Citymapper para navegação. (https://citymapper.com/?lang=en)\n",
+        "    - Dinheiro e cartões. [NOMAD] (https://www.nomadglobal.com/pt)\n",
+        "    - Seguro viagem. [cartao de credito] (https://www.mastercard.com.br/pt-br/consumidores/encontre-seu-cartao/cartoes-credito/mastercard-black/masterassist-plus.html)\n",
+        "    - Passeios e [tickets]: (https://www.getyourguide.com/pt-br/?visitor-id=7V5OPKDB36YAOKT89N71JPDVF3RR1O8R&locale_autoredirect_optout=true)\n",
+        "    \"\"\"\n",
+        "    return checklist\n",
+        "\n",
+        "def responder_usuario(user_input):\n",
+        "    resposta_anterior = CustomChatGPT(user_input)\n",
+        "    resposta_modificada = adicionar_tom_gen_z(resposta_anterior)\n",
+        "    historia_engracada = contar_historia_engracada()\n",
+        "\n",
+        "    # Aqui você pode adicionar lógica para definir o roteiro com base na entrada do usuário\n",
+        "    roteiro = definir_roteiro(user_input)\n",
+        "\n",
+        "    links_google_maps = adicionar_links_google_maps(user_input, roteiro)\n",
+        "    checklist_viagem = adicionar_checklist_viagem()\n",
+        "    mensagem_inicial = \"🛫 Hey viajante, preparado para uma aventura incrível? Bora lá! Travel AI por aqui, seu planejador de viagens pessoal! Vou criar um roteiro incrível para você! 😊\"\n",
+        "    resposta_final = f\"{mensagem_inicial}\\n\\n{formatar_roteiro(roteiro)}\\n\\n{resposta_modificada}\\n\\n{links_google_maps}\\n\\n{checklist_viagem}\\n\\n\\\"Evite Perrengues Champs!\\\" Deixa eu te contar uma história engraçada: {historia_engracada}\"\n",
+        "    return resposta_final\n",
+        "\n",
+        "def definir_roteiro(destino):\n",
+        "    # Aqui você pode adicionar lógica para definir o roteiro com base na entrada do usuário\n",
+        "    # Por exemplo, se o usuário mencionar \"Tóquio\", você pode retornar um roteiro específico para Tóquio\n",
+        "    # Se mencionar \"Paris\", retornar um roteiro para Paris, e assim por diante.\n",
+        "    # Vou deixar essa parte em aberto para que você adicione a lógica conforme necessário.\n",
+        "    roteiro = []\n",
+        "    return roteiro\n",
+        "\n",
+        "def formatar_roteiro(roteiro):\n",
+        "    # Aqui você pode adicionar lógica para formatar o roteiro de uma maneira adequada para exibição\n",
+        "    # Pode ser algo como exibir cada dia em uma lista ou em um formato de texto estruturado\n",
+        "    # Vou deixar essa parte em aberto para que você formate o roteiro conforme necessário.\n",
+        "    texto_roteiro = \"Roteiro:\\n\\n\"\n",
+        "    for dia, atividades_dia in enumerate(roteiro, start=1):\n",
+        "        texto_roteiro += f\"Dia {dia}:\\n\\n\"\n",
+        "        for atividade in atividades_dia:\n",
+        "            texto_roteiro += f\"- {atividade}\\n\"\n",
+        "        texto_roteiro += \"\\n\"\n",
+        "    return texto_roteiro\n",
+        "\n",
+        "\n",
+        "\n",
+        "demo = gradio.Interface(fn=responder_usuario, inputs=\"text\", outputs=\"text\", title=\"Travel AI: Seu Roteiro em 1 Clique!\")\n",
+        "demo.launch(share=True)\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 591
+        },
+        "id": "08bN93amFAdA",
+        "outputId": "5b1dc037-df63-4600-f805-c02f3ad87b73"
+      },
+      "execution_count": 78,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Colab notebook detected. To show errors in colab notebook, set debug=True in launch()\n",
+            "Running on public URL: https://6db2c92bd691b1ae3a.gradio.live\n",
+            "\n",
+            "This share link expires in 72 hours. For free permanent hosting and GPU upgrades, run `gradio deploy` from Terminal to deploy to Spaces (https://huggingface.co/spaces)\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ],
+            "text/html": [
+              "<div><iframe src=\"https://6db2c92bd691b1ae3a.gradio.live\" width=\"100%\" height=\"500\" allow=\"autoplay; camera; microphone; clipboard-read; clipboard-write;\" frameborder=\"0\" allowfullscreen></iframe></div>"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": []
+          },
+          "metadata": {},
+          "execution_count": 78
+        }
+      ]
+    }
+  ]
+}
