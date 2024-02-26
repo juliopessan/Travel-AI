@@ -40,7 +40,7 @@ Contribuições são muito bem-vindas! Se você tem alguma ideia para melhorar o
 Licença
 Este projeto é distribuído sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
 
-Desenvolvido com ❤ por Julio Pessan - Veja mais projetos em Seu GitHub
+Desenvolvido por Julio Pessan - Veja mais projetos em Seu GitHub
 
 
 
